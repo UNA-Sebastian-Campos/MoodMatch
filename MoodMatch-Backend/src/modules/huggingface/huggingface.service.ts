@@ -71,20 +71,22 @@ export class HuggingFaceService {
   }
 
   private buildPrompt(query: string): string {
-    return `<s>[INST] You are a music context analyzer. Extract music preferences and return ONLY valid JSON.
-
-Return this exact JSON structure (no markdown, no explanation):
+    return `<|system|>
+You are a music context analyzer. Extract music preferences from user requests and return ONLY valid JSON with no extra text or markdown.</s>
+<|user|>
+Analyze this music request and return ONLY this JSON (no explanation):
 {
   "mood": "calm|energetic|happy|sad|romantic|focused|chill",
   "activity": "study|workout|sleep|drive|party|relax|work|meditate",
   "genres": ["genre1", "genre2"],
-  "artists": ["artist1"],
+  "artists": ["artist name if mentioned, else empty array"],
   "keywords": ["keyword1", "keyword2"],
   "language": "en|es|pt|fr|de|it|any",
-  "context": "brief musical context description"
+  "context": "brief musical context"
 }
 
-User request: "${query}" [/INST]`;
+Request: "${query}"</s>
+<|assistant|>`;
   }
 
   /**

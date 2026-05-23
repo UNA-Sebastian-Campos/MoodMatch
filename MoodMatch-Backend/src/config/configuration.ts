@@ -12,7 +12,7 @@ export default () => ({
 
   huggingface: {
     apiKey: process.env.HUGGINGFACE_API_KEY,
-    model: process.env.HUGGINGFACE_MODEL || 'mistralai/Mistral-7B-Instruct-v0.2',
+    model: process.env.HUGGINGFACE_MODEL || 'HuggingFaceH4/zephyr-7b-beta',
     apiBaseUrl: 'https://router.huggingface.co/hf-inference',
   },
 
