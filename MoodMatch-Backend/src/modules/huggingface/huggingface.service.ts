@@ -36,7 +36,7 @@ export class HuggingFaceService {
       return context;
     } catch (error) {
       this.logger.warn(
-        `HuggingFace API failed (${error.message}), using rule-based fallback`,
+        `HuggingFace API failed (${error.message}) – status: ${error.response?.status} – body: ${JSON.stringify(error.response?.data)}`,
       );
       return this.ruleBasedFallback(query);
     }
@@ -45,49 +45,46 @@ export class HuggingFaceService {
   // ─── Private Helpers ───────────────────────────────────────────────────────
 
   private async callHuggingFaceApi(query: string): Promise<MusicContextDto> {
-    // New HuggingFace Router API — OpenAI-compatible chat completions format
+    // HuggingFace Router — text generation format (widely supported)
     const response = await this.http.post(
-      `/models/${this.model}/v1/chat/completions`,
+      `/models/${this.model}`,
       {
-        model: this.model,
-        messages: [
-          {
-            role: 'system',
-            content:
-              'You are a music context analyzer. Always respond with valid JSON only — no markdown, no explanation.',
-          },
-          {
-            role: 'user',
-            content: this.buildPrompt(query),
-          },
-        ],
-        max_tokens: 300,
-        temperature: 0.3,
+        inputs: this.buildPrompt(query),
+        parameters: {
+          max_new_tokens: 300,
+          temperature: 0.3,
+          return_full_text: false,
+          do_sample: false,
+        },
       },
     );
 
+    // Router returns [{ generated_text: "..." }] or { generated_text: "..." }
     const raw: string =
-      response.data?.choices?.[0]?.message?.content || '';
+      response.data?.[0]?.generated_text ||
+      response.data?.generated_text ||
+      '';
+
+    if (!raw) throw new Error('Empty response from HuggingFace');
 
     return this.parseJsonFromText(raw, query);
   }
 
-  /**
-   * Builds the user prompt for the chat completions API.
-   */
   private buildPrompt(query: string): string {
-    return `Extract music preferences from this request and return ONLY a valid JSON object with these exact fields:
+    return `<s>[INST] You are a music context analyzer. Extract music preferences and return ONLY valid JSON.
+
+Return this exact JSON structure (no markdown, no explanation):
 {
-  "mood": "one word (calm/energetic/happy/sad/romantic/focused/chill)",
-  "activity": "one word (study/workout/sleep/drive/party/relax/work/meditate)",
-  "genres": ["array of music genres"],
-  "artists": ["array of artist names if mentioned, else empty"],
-  "keywords": ["array of descriptive keywords"],
-  "language": "language code: en/es/pt/fr/de/it or any",
-  "context": "brief description of the musical context"
+  "mood": "calm|energetic|happy|sad|romantic|focused|chill",
+  "activity": "study|workout|sleep|drive|party|relax|work|meditate",
+  "genres": ["genre1", "genre2"],
+  "artists": ["artist1"],
+  "keywords": ["keyword1", "keyword2"],
+  "language": "en|es|pt|fr|de|it|any",
+  "context": "brief musical context description"
 }
 
-Request: "${query}"`;
+User request: "${query}" [/INST]`;
   }
 
   /**
