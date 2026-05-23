@@ -1,0 +1,72 @@
+/* Shimmer base animation */
+.skeleton-cover,
+.skeleton-line,
+.skeleton-circle {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-elevated) 25%,
+    var(--color-bg-hover)    50%,
+    var(--color-bg-elevated) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* Grid mirrors MusicCard grid */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-5);
+  width: 100%;
+}
+
+/* Card shell */
+.skeleton-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Cover placeholder (square) */
+.skeleton-cover {
+  aspect-ratio: 1;
+  width: 100%;
+  border-radius: 0;
+}
+
+/* Info section */
+.skeleton-info {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.skeleton-line { height: 12px; }
+.skeleton-line--title  { width: 75%; }
+.skeleton-line--artist { width: 55%; }
+.skeleton-line--album  { width: 65%; }
+.skeleton-line--short  { width: 35%; height: 10px; }
+.skeleton-line--btn    { flex: 1; height: 30px; border-radius: var(--radius-full); }
+
+.skeleton-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.skeleton-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.skeleton-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}

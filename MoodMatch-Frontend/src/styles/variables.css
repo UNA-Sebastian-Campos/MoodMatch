@@ -1,0 +1,91 @@
+/* ─────────────────────────────────────────────────────────────
+   MoodMatch Design Tokens
+   Dark mode · Spotify + Netflix minimal aesthetic
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Brand colors */
+  --color-primary:        #1db954;   /* Spotify green */
+  --color-primary-hover:  #1ed760;
+  --color-primary-dim:    rgba(29, 185, 84, 0.15);
+  --color-accent:         #e50914;   /* Netflix red – used sparingly */
+
+  /* Background layers */
+  --color-bg-base:        #0f0f0f;
+  --color-bg-surface:     #181818;
+  --color-bg-elevated:    #242424;
+  --color-bg-card:        #1e1e1e;
+  --color-bg-hover:       #2a2a2a;
+  --color-bg-overlay:     rgba(0, 0, 0, 0.75);
+
+  /* Text */
+  --color-text-primary:   #ffffff;
+  --color-text-secondary: #b3b3b3;
+  --color-text-muted:     #535353;
+  --color-text-inverse:   #000000;
+
+  /* Borders */
+  --color-border:         rgba(255, 255, 255, 0.08);
+  --color-border-focus:   rgba(29, 185, 84, 0.5);
+
+  /* Status */
+  --color-success:        #1db954;
+  --color-warning:        #f59e0b;
+  --color-error:          #ef4444;
+  --color-info:           #3b82f6;
+
+  /* Spacing scale */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+  --text-5xl:  3rem;
+
+  --font-normal:   400;
+  --font-medium:   500;
+  --font-semibold: 600;
+  --font-bold:     700;
+  --font-black:    900;
+
+  /* Radii */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.5);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.6);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.7);
+  --shadow-glow: 0 0 20px rgba(29, 185, 84, 0.3);
+
+  /* Transitions */
+  --transition-fast:   150ms ease;
+  --transition-base:   250ms ease;
+  --transition-slow:   400ms ease;
+
+  /* Layout */
+  --max-width: 1280px;
+  --navbar-height: 64px;
+}
