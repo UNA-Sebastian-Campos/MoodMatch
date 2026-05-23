@@ -10,10 +10,20 @@ async function bootstrap() {
   // Global prefix
   app.setGlobalPrefix('api');
 
-  // CORS – allow frontend origin (strip trailing slash to avoid mismatch)
-  const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
+  // CORS – whitelist localhost + any *.vercel.app subdomain + explicit FRONTEND_URL
+  const explicitOrigin = (process.env.FRONTEND_URL || '').replace(/\/$/, '');
   app.enableCors({
-    origin: [frontendUrl, 'http://localhost:5173'],
+    origin: (origin, callback) => {
+      // Allow requests without origin (Postman, Railway health checks, etc.)
+      if (!origin) return callback(null, true);
+      const allowed =
+        origin === 'http://localhost:5173' ||
+        origin === 'http://localhost:3000' ||
+        origin.endsWith('.vercel.app') ||
+        (explicitOrigin && origin === explicitOrigin);
+      if (allowed) return callback(null, true);
+      callback(new Error(`CORS blocked: ${origin}`));
+    },
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: false,
