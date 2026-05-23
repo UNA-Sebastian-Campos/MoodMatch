@@ -89,7 +89,30 @@ export class HuggingFaceService {
         parameters: { candidate_labels: candidateLabels },
       },
     );
-    return response.data;
+
+    const data = response.data;
+    this.logger.debug(`HF raw response: ${JSON.stringify(data).substring(0, 200)}`);
+
+    // Format 1: { labels: [...], scores: [...] }  ← standard zero-shot
+    if (data?.labels && Array.isArray(data.labels)) {
+      return data;
+    }
+
+    // Format 2: [{ label: "...", score: 0.9 }, ...]  ← some router versions
+    if (Array.isArray(data) && data[0]?.label !== undefined) {
+      const sorted = [...data].sort((a, b) => b.score - a.score);
+      return {
+        labels: sorted.map((d) => d.label),
+        scores: sorted.map((d) => d.score),
+      };
+    }
+
+    // Format 3: model loading  { error: "...", estimated_time: N }
+    if (data?.estimated_time || data?.error) {
+      throw new Error(`HF model loading or error: ${JSON.stringify(data)}`);
+    }
+
+    throw new Error(`Unexpected HF response format: ${JSON.stringify(data).substring(0, 150)}`);
   }
 
   // ─── Rule-based fallback ───────────────────────────────────────────────────
