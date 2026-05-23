@@ -45,42 +45,49 @@ export class HuggingFaceService {
   // ─── Private Helpers ───────────────────────────────────────────────────────
 
   private async callHuggingFaceApi(query: string): Promise<MusicContextDto> {
-    const prompt = this.buildPrompt(query);
-
-    const response = await this.http.post(`/${this.model}`, {
-      inputs: prompt,
-      parameters: {
-        max_new_tokens: 300,
+    // New HuggingFace Router API — OpenAI-compatible chat completions format
+    const response = await this.http.post(
+      `/models/${this.model}/v1/chat/completions`,
+      {
+        model: this.model,
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are a music context analyzer. Always respond with valid JSON only — no markdown, no explanation.',
+          },
+          {
+            role: 'user',
+            content: this.buildPrompt(query),
+          },
+        ],
+        max_tokens: 300,
         temperature: 0.3,
-        return_full_text: false,
-        do_sample: false,
       },
-    });
+    );
 
     const raw: string =
-      response.data?.[0]?.generated_text || response.data?.generated_text || '';
+      response.data?.choices?.[0]?.message?.content || '';
 
     return this.parseJsonFromText(raw, query);
   }
 
   /**
-   * Builds a structured instruction prompt for Mistral-style models.
-   * The model is instructed to return ONLY valid JSON.
+   * Builds the user prompt for the chat completions API.
    */
   private buildPrompt(query: string): string {
-    return `<s>[INST] You are a music context analyzer. Extract music preferences from the user's request.
-Return ONLY a valid JSON object with exactly these fields (no extra text, no markdown, just JSON):
+    return `Extract music preferences from this request and return ONLY a valid JSON object with these exact fields:
 {
-  "mood": "one word mood (calm/energetic/happy/sad/romantic/focused/aggressive/chill)",
-  "activity": "one word activity (study/workout/sleep/drive/party/relax/meditate/work)",
-  "genres": ["array", "of", "music", "genres"],
-  "artists": ["array", "of", "artist", "names", "if", "mentioned"],
-  "keywords": ["array", "of", "descriptive", "keywords"],
-  "language": "language code (en/es/pt/fr/de/it or 'any')",
+  "mood": "one word (calm/energetic/happy/sad/romantic/focused/chill)",
+  "activity": "one word (study/workout/sleep/drive/party/relax/work/meditate)",
+  "genres": ["array of music genres"],
+  "artists": ["array of artist names if mentioned, else empty"],
+  "keywords": ["array of descriptive keywords"],
+  "language": "language code: en/es/pt/fr/de/it or any",
   "context": "brief description of the musical context"
 }
 
-User request: "${query}" [/INST]`;
+Request: "${query}"`;
   }
 
   /**
