@@ -1,29 +1,44 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { debounce } from '../../utils/debounce';
-import { sanitizeQuery } from '../../utils/sanitize';
-import './SearchBar.css';
+import React, { useState, useRef, useCallback } from "react";
+import { debounce } from "../../utils/debounce";
+import { sanitizeQuery } from "../../utils/sanitize";
+import { timeAgo } from "../../utils/format";
+import {
+  IconSearch,
+  IconMusic,
+  IconClock,
+  IconClose,
+  IconReturn,
+} from "../icons/Icons";
+import "./SearchBar.css";
 
 const SUGGESTIONS = [
-  'música relajante para estudiar',
-  'rock en inglés para entrenar',
-  'lo-fi para concentrarme',
-  'jazz suave para la noche',
-  'música alegre en español',
-  'música para conducir',
-  'ambient para trabajar',
-  'música para la playa',
+  "música relajante para estudiar",
+  "rock en inglés para entrenar",
+  "lo-fi para concentrarme",
+  "jazz suave para la noche",
+  "música alegre en español",
+  "música para conducir",
 ];
 
-export default function SearchBar({ onSearch, isLoading = false, initialValue = '' }) {
+export default function SearchBar({
+  onSearch,
+  isLoading = false,
+  initialValue = "",
+  history = [],
+  onSelectHistory,
+  onRemoveHistory,
+}) {
   const [value, setValue] = useState(initialValue);
   const [validationError, setValidationError] = useState(null);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef(null);
 
-  // Debounced validation (feedback only — doesn't trigger search)
   const validateDebounced = useCallback(
     debounce((v) => {
-      if (v.length === 0) { setValidationError(null); return; }
+      if (v.length === 0) {
+        setValidationError(null);
+        return;
+      }
       const { error } = sanitizeQuery(v);
       setValidationError(error);
     }, 500),
@@ -39,63 +54,67 @@ export default function SearchBar({ onSearch, isLoading = false, initialValue = 
   const handleSubmit = (e) => {
     e?.preventDefault();
     if (isLoading || !value.trim()) return;
-    setShowSuggestions(false);
+    setIsFocused(false);
     onSearch(value);
   };
 
   const handleSuggestion = (suggestion) => {
     setValue(suggestion);
-    setShowSuggestions(false);
-    onSearch(suggestion);
+    inputRef.current?.focus();
+  };
+
+  const handleHistory = (query) => {
+    setIsFocused(false);
+    (onSelectHistory || onSearch)(query);
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') handleSubmit();
-    if (e.key === 'Escape') { setShowSuggestions(false); inputRef.current?.blur(); }
+    if (e.key === "Enter") handleSubmit();
+    if (e.key === "Escape") {
+      setIsFocused(false);
+      inputRef.current?.blur();
+    }
   };
 
   const handleClear = () => {
-    setValue('');
+    setValue("");
     setValidationError(null);
-    setShowSuggestions(false);
     inputRef.current?.focus();
   };
+
+  const recent = (history || []).slice(0, 5);
+  const showPanel =
+    isFocused && !value && (recent.length > 0 || SUGGESTIONS.length > 0);
 
   return (
     <div className="searchbar">
       <form className="searchbar__form" onSubmit={handleSubmit} role="search">
-        {/* Search icon */}
         <span className="searchbar__icon" aria-hidden="true">
           {isLoading ? (
             <span className="searchbar__spinner" />
           ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
+            <IconSearch size={20} />
           )}
         </span>
 
-        {/* Input */}
         <input
           ref={inputRef}
           type="text"
-          className={`searchbar__input ${validationError ? 'searchbar__input--error' : ''}`}
+          className={`searchbar__input ${validationError ? "searchbar__input--error" : ""}`}
           placeholder="Describe tu estado de ánimo o actividad…"
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => setShowSuggestions(true)}
-          onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 150)}
           disabled={isLoading}
           maxLength={200}
           aria-label="Search music by mood or activity"
-          aria-describedby={validationError ? 'searchbar-error' : undefined}
+          aria-describedby={validationError ? "searchbar-error" : undefined}
           autoComplete="off"
           spellCheck="false"
         />
 
-        {/* Clear button */}
         {value && !isLoading && (
           <button
             type="button"
@@ -104,44 +123,97 @@ export default function SearchBar({ onSearch, isLoading = false, initialValue = 
             aria-label="Clear search"
             tabIndex={-1}
           >
-            ✕
+            <IconClose size={16} />
           </button>
         )}
 
-        {/* Search button */}
         <button
           type="submit"
           className="searchbar__btn"
           disabled={isLoading || !value.trim()}
           aria-label="Search"
         >
-          {isLoading ? 'Searching…' : 'Search'}
+          <span>{isLoading ? "Searching…" : "Search"}</span>
+          {!isLoading && <IconReturn size={15} />}
         </button>
       </form>
 
-      {/* Validation error */}
       {validationError && (
         <p id="searchbar-error" className="searchbar__error" role="alert">
           {validationError}
         </p>
       )}
 
-      {/* Suggestions dropdown */}
-      {showSuggestions && !value && (
-        <div className="searchbar__suggestions" role="listbox" aria-label="Search suggestions">
-          <p className="searchbar__suggestions-label">Try these…</p>
-          {SUGGESTIONS.map((s) => (
-            <button
-              key={s}
-              className="searchbar__suggestion"
-              onMouseDown={() => handleSuggestion(s)}
-              role="option"
-              aria-selected="false"
-            >
-              <span className="searchbar__suggestion-icon">🎵</span>
-              {s}
-            </button>
-          ))}
+      {showPanel && (
+        <div
+          className="searchbar__panel"
+          role="listbox"
+          aria-label="Suggestions"
+        >
+          {recent.length > 0 && (
+            <div className="searchbar__panel-section">
+              <p className="searchbar__panel-label">
+                <IconClock size={13} /> Recent
+              </p>
+              {recent.map((item) => (
+                <div
+                  key={item.id}
+                  className="searchbar__row searchbar__row--recent"
+                >
+                  <button
+                    type="button"
+                    className="searchbar__row-main"
+                    onMouseDown={() => handleHistory(item.query)}
+                    role="option"
+                    aria-selected="false"
+                  >
+                    <IconClock size={14} />
+                    <span className="searchbar__row-text">{item.query}</span>
+                    {item.timestamp && (
+                      <span className="searchbar__row-meta">
+                        {timeAgo(item.timestamp)}
+                      </span>
+                    )}
+                  </button>
+                  {onRemoveHistory && (
+                    <button
+                      type="button"
+                      className="searchbar__row-remove"
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        onRemoveHistory(item.id);
+                      }}
+                      aria-label="Remove from history"
+                      tabIndex={-1}
+                    >
+                      <IconClose size={12} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {SUGGESTIONS.length > 0 && (
+            <div className="searchbar__panel-section">
+              <p className="searchbar__panel-label">
+                <IconMusic size={13} /> Suggestions
+              </p>
+              {SUGGESTIONS.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  className="searchbar__row searchbar__row--suggestion"
+                  onMouseDown={() => handleSuggestion(suggestion)}
+                  role="option"
+                  aria-selected="false"
+                >
+                  <IconMusic size={14} />
+                  <span className="searchbar__row-text">{suggestion}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

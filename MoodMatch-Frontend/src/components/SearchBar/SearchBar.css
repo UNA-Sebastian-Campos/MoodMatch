@@ -8,15 +8,18 @@
   display: flex;
   align-items: center;
   background: var(--color-bg-elevated);
-  border: 1.5px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
   padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
-  gap: var(--space-2);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  gap: var(--space-3);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
 }
+
+/* Single focus treatment lives on the form. The input itself stays ring-less. */
 .searchbar__form:focus-within {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-dim);
+  background: var(--color-bg-surface);
+  box-shadow: 0 0 0 1px var(--color-primary), var(--shadow-glow);
 }
 
 /* Icon / spinner */
@@ -25,7 +28,9 @@
   align-items: center;
   color: var(--color-text-muted);
   flex-shrink: 0;
+  transition: color var(--transition-base);
 }
+.searchbar__form:focus-within .searchbar__icon { color: var(--color-primary); }
 .searchbar__spinner {
   width: 20px;
   height: 20px;
@@ -36,30 +41,33 @@
   display: inline-block;
 }
 
-/* Input */
+/* Input — explicitly no border/outline/shadow so there's no second ring */
 .searchbar__input {
   flex: 1;
   background: transparent;
   border: none;
   outline: none;
+  box-shadow: none;
   font-size: var(--text-base);
   color: var(--color-text-primary);
   min-width: 0;
   padding: var(--space-1) 0;
+  letter-spacing: 0.01em;
 }
+.searchbar__input:focus,
+.searchbar__input:focus-visible { outline: none; box-shadow: none; }
 .searchbar__input::placeholder { color: var(--color-text-muted); }
 .searchbar__input:disabled { opacity: 0.6; cursor: not-allowed; }
 .searchbar__input--error { color: var(--color-error); }
 
 /* Clear */
 .searchbar__clear {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  width: 24px;
-  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-text-muted);
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   flex-shrink: 0;
   transition: background var(--transition-fast), color var(--transition-fast);
@@ -71,24 +79,25 @@
 
 /* Submit button */
 .searchbar__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   background: var(--color-primary);
   color: var(--color-text-inverse);
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
-  padding: var(--space-2) var(--space-5);
+  padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-full);
   flex-shrink: 0;
-  transition: background var(--transition-fast), transform var(--transition-fast);
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
   white-space: nowrap;
 }
 .searchbar__btn:hover:not(:disabled) {
   background: var(--color-primary-hover);
-  transform: scale(1.02);
+  box-shadow: var(--shadow-glow);
 }
-.searchbar__btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.searchbar__btn:active:not(:disabled) { transform: scale(0.97); }
+.searchbar__btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Error message */
 .searchbar__error {
@@ -99,8 +108,8 @@
   animation: fadeIn var(--transition-fast);
 }
 
-/* Suggestions */
-.searchbar__suggestions {
+/* ── Unified focus panel: recent + suggestions in one surface ── */
+.searchbar__panel {
   position: absolute;
   top: calc(100% + var(--space-2));
   left: 0;
@@ -108,37 +117,21 @@
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  padding: var(--space-2);
   box-shadow: var(--shadow-lg);
   z-index: 50;
+  max-height: min(60vh, 420px);
+  overflow-y: auto;
   animation: fadeInScale var(--transition-base);
 }
-.searchbar__suggestions-label {
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: var(--space-3) var(--space-4) var(--space-2);
+
+.searchbar__panel-section + .searchbar__panel-section {
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
 }
-.searchbar__suggestion {
+
+.searchbar__panel-label {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
-  text-align: left;
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  transition: background var(--transition-fast), color var(--transition-fast);
-  border-radius: 0;
-}
-.searchbar__suggestion:hover {
-  background: var(--color-bg-hover);
-  color: var(--color-text-primary);
-}
-.searchbar__suggestion-icon { font-size: var(--text-base); }
-
-@media (max-width: 480px) {
-  .searchbar__btn { padding: var(--space-2) var(--space-3); font-size: var(--text-xs); }
-}
+  gap: var(--space-

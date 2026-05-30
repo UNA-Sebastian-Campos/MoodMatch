@@ -16,6 +16,11 @@ export default () => ({
     apiBaseUrl: 'https://router.huggingface.co/hf-inference',
   },
 
+  lastfm: {
+    apiKey: process.env.LASTFM_API_KEY,
+    apiBaseUrl: 'https://ws.audioscrobbler.com/2.0/',
+  },
+
   throttle: {
     ttl: parseInt(process.env.THROTTLE_TTL, 10) || 60000,
     limit: parseInt(process.env.THROTTLE_LIMIT, 10) || 30,
