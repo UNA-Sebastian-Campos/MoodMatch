@@ -6,7 +6,7 @@
   min-height: 88vh;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Backdrop */
@@ -15,6 +15,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
 }
 
 /* Cyber grid — faint, masked to a soft center glow */
@@ -126,6 +127,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--space-4);
+  margin-bottom: var(--space-12);
 }
 .feature-card {
   position: relative;
@@ -164,7 +166,7 @@
 }
 
 /* ─── Examples ─── */
-.home__examples { margin-top: var(--space-12); }
+.home__examples { margin-top: var(--space-20); }
 .home__examples-grid {
   display: flex;
   flex-wrap: wrap;
