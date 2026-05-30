@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { Heart, HeartOff } from 'lucide-react';
 import AudioPreview from '../AudioPreview/AudioPreview';
 import { addFavorite, removeFavorite, isFavorite } from '../../storage/favorites';
 import { truncate } from '../../utils/format';
@@ -16,7 +17,7 @@ export default function MusicCard({ track, onFavoriteChange, showToast }) {
     } else {
       addFavorite(track);
       setFavorited(true);
-      showToast?.('Added to favorites ❤', 'success');
+      showToast?.('Added to favorites', 'success');
     }
     onFavoriteChange?.();
   }, [favorited, track, onFavoriteChange, showToast]);
@@ -29,7 +30,7 @@ export default function MusicCard({ track, onFavoriteChange, showToast }) {
       <div className="music-card__cover-wrap">
         <img
           className="music-card__cover"
-          src={imgError ? 'https://placehold.co/300x300/1e1e1e/535353?text=♪' : track.imageUrl}
+          src={imgError ? 'https://placehold.co/300x300/1e1e1e/535353?text=Music' : track.imageUrl}
           alt={`${track.album} cover`}
           onError={handleImageError}
           loading="lazy"
@@ -49,9 +50,7 @@ export default function MusicCard({ track, onFavoriteChange, showToast }) {
               aria-label={`Open ${track.name} on Spotify`}
               onClick={(e) => e.stopPropagation()}
             >
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="white" aria-hidden="true">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
+              <SpotifyIcon size={40} className="music-card__spotify-icon" />
               <span>Play on Spotify</span>
             </a>
           )}
@@ -86,7 +85,7 @@ export default function MusicCard({ track, onFavoriteChange, showToast }) {
             aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
             aria-pressed={favorited}
           >
-            {favorited ? '❤' : '♡'}
+            {favorited ? <Heart size={18} /> : <HeartOff size={18} />}
           </button>
 
           <a
@@ -96,7 +95,7 @@ export default function MusicCard({ track, onFavoriteChange, showToast }) {
             className="music-card__spotify-btn"
             aria-label={`Open ${track.name} on Spotify`}
           >
-            <SpotifyIcon />
+            <SpotifyIcon size={14} />
             Open
           </a>
         </div>
@@ -105,9 +104,16 @@ export default function MusicCard({ track, onFavoriteChange, showToast }) {
   );
 }
 
-function SpotifyIcon() {
+function SpotifyIcon({ size = 14, className }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <circle cx="12" cy="12" r="12" fill="#1DB954" />
       <path
         d="M17.9 10.9C14.7 9 9.35 8.8 6.3 9.75c-.5.15-1-.15-1.15-.6-.15-.5.15-1 .6-1.15 3.55-1.05 9.4-.85 13.1 1.35.45.25.6.85.35 1.3-.25.35-.85.5-1.3.25zm-.1 2.8c-.25.35-.7.5-1.05.25-2.7-1.65-6.8-2.15-9.95-1.15-.4.1-.85-.1-.95-.5-.1-.4.1-.85.5-.95 3.65-1.1 8.15-.55 11.25 1.35.3.15.45.65.2 1zm-1.2 2.75c-.2.3-.55.4-.85.2-2.35-1.45-5.3-1.75-8.8-.95-.35.1-.65-.15-.75-.45-.1-.35.15-.65.45-.75 3.8-.85 7.1-.5 9.7 1.1.35.15.4.55.25.85z"

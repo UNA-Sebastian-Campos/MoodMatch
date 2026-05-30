@@ -3,25 +3,33 @@ import SearchBar from '../../components/SearchBar/SearchBar';
 import { useAppContext } from '../../App';
 import { getHistory, removeFromHistory } from '../../storage/history';
 import {
-  IconSparkles, IconHeadphones, IconHeart, IconBolt,
-  IconBook, IconDumbbell, IconMoon, IconCar, IconUmbrella, IconBriefcase,
-} from '../../components/icons/Icons';
+  Book,
+  Briefcase,
+  Car,
+  Dumbbell,
+  Headphones,
+  Heart,
+  Moon,
+  Sparkles,
+  Umbrella,
+  Zap,
+} from 'lucide-react';
 import './Home.css';
 
 const FEATURE_CARDS = [
-  { Icon: IconSparkles,   title: 'AI-powered',        desc: 'Describe your mood in plain language and let our AI analyze it' },
-  { Icon: IconHeadphones, title: 'Real Spotify music', desc: 'Get actual tracks playable directly on Spotify' },
-  { Icon: IconHeart,      title: 'Save favorites',    desc: 'Keep your favorite discoveries across sessions' },
-  { Icon: IconBolt,       title: 'Instant results',   desc: 'Smart search in under 3 seconds' },
+  { Icon: Sparkles,  title: 'AI-powered',        desc: 'Describe your mood in plain language and let our AI analyze it' },
+  { Icon: Headphones, title: 'Real Spotify music', desc: 'Get actual tracks playable directly on Spotify' },
+  { Icon: Heart,     title: 'Save favorites',    desc: 'Keep your favorite discoveries across sessions' },
+  { Icon: Zap,       title: 'Instant results',   desc: 'Smart search in under 3 seconds' },
 ];
 
 const EXAMPLES = [
-  { Icon: IconBook,      text: 'música tranquila para estudiar' },
-  { Icon: IconDumbbell,  text: 'rock intenso para entrenar' },
-  { Icon: IconMoon,      text: 'jazz suave para la noche' },
-  { Icon: IconCar,       text: 'música para conducir en autopista' },
-  { Icon: IconUmbrella,  text: 'reggaeton para la playa' },
-  { Icon: IconBriefcase, text: 'ambient para trabajar concentrado' },
+  { Icon: Book,      text: 'música tranquila para estudiar' },
+  { Icon: Dumbbell,  text: 'rock intenso para entrenar' },
+  { Icon: Moon,      text: 'jazz suave para la noche' },
+  { Icon: Car,       text: 'música para conducir en autopista' },
+  { Icon: Umbrella,  text: 'reggaeton para la playa' },
+  { Icon: Briefcase, text: 'ambient para trabajar concentrado' },
 ];
 
 export default function Home() {

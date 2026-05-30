@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Heart, Music2 } from 'lucide-react';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -24,7 +25,7 @@ export default function Navbar() {
       <div className="navbar__inner">
         {/* Logo */}
         <Link to="/" className="navbar__logo" aria-label="MoodMatch Home">
-          <span className="navbar__logo-icon">🎵</span>
+          <span className="navbar__logo-icon" aria-hidden="true"><Music2 size={20} /></span>
           <span className="navbar__logo-text">MoodMatch</span>
         </Link>
 
@@ -46,7 +47,7 @@ export default function Navbar() {
             to="/favorites"
             className={`navbar__link ${isActive('/favorites') ? 'navbar__link--active' : ''}`}
           >
-            ❤ Favorites
+            <Heart size={16} /> Favorites
           </Link>
         </nav>
 
@@ -70,7 +71,7 @@ export default function Navbar() {
       >
         <Link to="/"          className="navbar__mobile-link">Home</Link>
         <Link to="/results"   className="navbar__mobile-link">Discover</Link>
-        <Link to="/favorites" className="navbar__mobile-link">❤ Favorites</Link>
+        <Link to="/favorites" className="navbar__mobile-link"><Heart size={16} /> Favorites</Link>
       </nav>
     </header>
   );

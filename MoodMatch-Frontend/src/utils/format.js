@@ -19,10 +19,10 @@ export function formatDuration(ms) {
  * @param {number} score - 0 to 100
  */
 export function popularityToLabel(score) {
-  if (score >= 80) return '🔥 Trending';
-  if (score >= 60) return '⭐ Popular';
-  if (score >= 40) return '🎵 Known';
-  return '💎 Hidden gem';
+  if (score >= 80) return 'Trending';
+  if (score >= 60) return 'Popular';
+  if (score >= 40) return 'Known';
+  return 'Hidden gem';
 }
 
 /**

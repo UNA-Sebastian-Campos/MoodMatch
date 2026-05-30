@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Bot, Brain, Globe, Zap } from 'lucide-react';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import MusicCard from '../../components/MusicCard/MusicCard';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
@@ -104,22 +105,22 @@ export default function Results() {
             {/* Analysis source indicator */}
             {musicContext.analysisSource === 'huggingface' ? (
               <span className="results__source-badge results__source-badge--ai" title="Query analyzed by HuggingFace AI">
-                🤖 AI Analysis
+                <Bot size={14} /> AI Analysis
               </span>
             ) : (
               <span className="results__source-badge results__source-badge--fallback" title="HuggingFace unavailable — using smart keyword detection">
-                ⚡ Smart Fallback
+                <Zap size={14} /> Smart Fallback
               </span>
             )}
 
             <span className="results__context-badge">
-              🧠 {capitalize(musicContext.mood)} · {capitalize(musicContext.activity)}
+              <Brain size={14} /> {capitalize(musicContext.mood)} · {capitalize(musicContext.activity)}
             </span>
             {musicContext.genres.slice(0, 3).map((g) => (
               <span key={g} className="results__genre-tag">{g}</span>
             ))}
             {musicContext.language !== 'any' && (
-              <span className="results__genre-tag">🌐 {musicContext.language}</span>
+              <span className="results__genre-tag"><Globe size={14} /> {musicContext.language}</span>
             )}
           </div>
         )}

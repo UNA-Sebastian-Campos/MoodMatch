@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
+import { Ban, Pause, Play } from 'lucide-react';
 import './AudioPreview.css';
 
 /**
@@ -82,7 +83,7 @@ export default function AudioPreview({ previewUrl, trackName }) {
   if (!previewUrl) {
     return (
       <div className="audio-preview audio-preview--unavailable" title="Preview not available">
-        <span className="audio-preview__unavail-icon">🚫</span>
+        <span className="audio-preview__unavail-icon" aria-hidden="true"><Ban size={20} /></span>
         <span className="audio-preview__unavail-text">Preview unavailable</span>
       </div>
     );
@@ -101,16 +102,9 @@ export default function AudioPreview({ previewUrl, trackName }) {
       ) : (
         <span className="audio-preview__icon">
           {isPlaying ? (
-            // Pause icon
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-              <rect x="6" y="4" width="4" height="16" rx="1" />
-              <rect x="14" y="4" width="4" height="16" rx="1" />
-            </svg>
+            <Pause size={28} />
           ) : (
-            // Play icon
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-              <path d="M8 5v14l11-7z" />
-            </svg>
+            <Play size={28} />
           )}
         </span>
       )}

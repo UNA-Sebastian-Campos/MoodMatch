@@ -56,11 +56,12 @@
 }
 .music-card__overlay-spotify:hover { transform: scale(1.1); }
 .music-card__overlay-spotify svg {
-  background: #1db954;
-  border-radius: 50%;
-  padding: 6px;
   width: 48px;
   height: 48px;
+}
+
+.music-card__spotify-icon {
+  display: block;
 }
 
 /* Explicit badge */

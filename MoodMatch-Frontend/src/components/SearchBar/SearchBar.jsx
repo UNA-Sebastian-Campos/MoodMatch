@@ -3,12 +3,12 @@ import { debounce } from "../../utils/debounce";
 import { sanitizeQuery } from "../../utils/sanitize";
 import { timeAgo } from "../../utils/format";
 import {
-  IconSearch,
-  IconMusic,
-  IconClock,
-  IconClose,
-  IconReturn,
-} from "../icons/Icons";
+  ArrowRight,
+  Clock,
+  Music2,
+  Search,
+  X,
+} from "lucide-react";
 import "./SearchBar.css";
 
 const SUGGESTIONS = [
@@ -93,7 +93,7 @@ export default function SearchBar({
           {isLoading ? (
             <span className="searchbar__spinner" />
           ) : (
-            <IconSearch size={20} />
+            <Search size={20} />
           )}
         </span>
 
@@ -123,7 +123,7 @@ export default function SearchBar({
             aria-label="Clear search"
             tabIndex={-1}
           >
-            <IconClose size={16} />
+            <X size={16} />
           </button>
         )}
 
@@ -134,7 +134,7 @@ export default function SearchBar({
           aria-label="Search"
         >
           <span>{isLoading ? "Searching…" : "Search"}</span>
-          {!isLoading && <IconReturn size={15} />}
+          {!isLoading && <ArrowRight size={15} />}
         </button>
       </form>
 
@@ -153,7 +153,7 @@ export default function SearchBar({
           {recent.length > 0 && (
             <div className="searchbar__panel-section">
               <p className="searchbar__panel-label">
-                <IconClock size={13} /> Recent
+                <Clock size={13} /> Recent
               </p>
               {recent.map((item) => (
                 <div
@@ -167,7 +167,7 @@ export default function SearchBar({
                     role="option"
                     aria-selected="false"
                   >
-                    <IconClock size={14} />
+                    <Clock size={14} />
                     <span className="searchbar__row-text">{item.query}</span>
                     {item.timestamp && (
                       <span className="searchbar__row-meta">
@@ -186,7 +186,7 @@ export default function SearchBar({
                       aria-label="Remove from history"
                       tabIndex={-1}
                     >
-                      <IconClose size={12} />
+                      <X size={12} />
                     </button>
                   )}
                 </div>
@@ -197,7 +197,7 @@ export default function SearchBar({
           {SUGGESTIONS.length > 0 && (
             <div className="searchbar__panel-section">
               <p className="searchbar__panel-label">
-                <IconMusic size={13} /> Suggestions
+                <Music2 size={13} /> Suggestions
               </p>
               {SUGGESTIONS.map((suggestion) => (
                 <button
@@ -208,7 +208,7 @@ export default function SearchBar({
                   role="option"
                   aria-selected="false"
                 >
-                  <IconMusic size={14} />
+                  <Music2 size={14} />
                   <span className="searchbar__row-text">{suggestion}</span>
                 </button>
               ))}
